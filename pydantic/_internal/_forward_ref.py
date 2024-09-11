@@ -1,12 +1,15 @@
 from __future__ import annotations as _annotations
 
 from dataclasses import dataclass
-from typing import Union
+from typing import Any, Union
+
+from pydantic_core import PydanticUndefined
 
 
 @dataclass
 class PydanticRecursiveRef:
     type_ref: str
+    original_type: Any = PydanticUndefined
 
     __name__ = 'PydanticRecursiveRef'
     __hash__ = object.__hash__

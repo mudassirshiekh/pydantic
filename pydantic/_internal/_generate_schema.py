@@ -917,6 +917,8 @@ class GenerateSchema:
                 return self._model_schema(obj)
 
         if isinstance(obj, PydanticRecursiveRef):
+            if obj.type_ref not in recursively_defined_type_refs() and obj.original_type is not PydanticUndefined:
+                return self._generate_schema_inner(replace_types(obj.original_type, self._typevars_map))
             return core_schema.definition_reference_schema(schema_ref=obj.type_ref)
 
         return self.match_type(obj)

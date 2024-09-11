@@ -16,6 +16,7 @@ from pydantic.errors import PydanticUserError
 from . import _typing_extra
 from ._config import ConfigWrapper
 from ._docs_extraction import extract_docstrings_from_cls
+from ._forward_ref import PydanticRecursiveRef
 from ._import_utils import import_cached_base_model, import_cached_field_info
 from ._repr import Representation
 from ._typing_extra import get_cls_type_hints_lenient, is_classvar, is_finalvar
@@ -217,7 +218,12 @@ def collect_model_fields(  # noqa: C901
 
     if typevars_map:
         for field in fields.values():
+            original_annotation = field.annotation
             field.apply_typevars_map(typevars_map, types_namespace)
+            # TODO isinstance check: what if in a union?
+            # TODO do the same for `GenerateSchema._dataclass_schema`
+            if original_annotation is not field.annotation and isinstance(field.annotation, PydanticRecursiveRef):
+                field.annotation.original_type = original_annotation
 
     _update_fields_from_docstrings(cls, fields, config_wrapper)
 
