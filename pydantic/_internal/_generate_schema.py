@@ -597,6 +597,9 @@ class GenerateSchema:
                 - If `typing.TypedDict` is used instead of `typing_extensions.TypedDict` on Python < 3.12.
                 - If `__modify_schema__` method is used instead of `__get_pydantic_json_schema__`.
         """
+        if _typing_extra.is_self(obj):
+            obj = self._resolve_self_type(obj)
+
         schema = self._generate_schema_from_get_schema_method(obj, obj)
 
         if schema is None:
@@ -836,9 +839,6 @@ class GenerateSchema:
         return args[0], args[1]
 
     def _generate_schema_inner(self, obj: Any) -> core_schema.CoreSchema:
-        if _typing_extra.is_self(obj):
-            obj = self._resolve_self_type(obj)
-
         if _typing_extra.is_annotated(obj):
             return self._annotated_schema(obj)
 
@@ -2020,7 +2020,6 @@ class GenerateSchema:
         pydantic_js_annotation_functions: list[GetJsonSchemaFunction] = []
 
         def inner_handler(obj: Any) -> CoreSchema:
-            # TODO can obj be != source? if not, then just call self.generate_schema
             schema = self._generate_schema_from_get_schema_method(obj, source_type)
 
             if schema is None:
