@@ -27,6 +27,7 @@ If you're using Pydantic V1 you may want to look at the
 [`1.10.X-fixes` git branch](https://github.com/pydantic/pydantic/tree/1.10.X-fixes). Pydantic V2 also ships with the latest version of Pydantic V1 built in so that you can incrementally upgrade your code base and projects: `from pydantic import v1 as pydantic_v1`.
 
 ## Help
+## Mudassir Alam
 
 See [documentation](https://docs.pydantic.dev/) for more details.
 
